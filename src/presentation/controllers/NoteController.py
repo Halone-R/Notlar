@@ -1,4 +1,4 @@
-from business.services import NoteService
+from src.business.services import NoteService
 
 class NoteController:
     def __init__(self, note_service: NoteService):
