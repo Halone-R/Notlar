@@ -1,5 +1,5 @@
 from pymongo.mongo_client import MongoClient
-from db.mongo_db_configs import mongo_db_infos
+from src.data.db.mongo_db_configs import mongo_db_infos
 
 class BDConnectionHandler:
     def __init__(self) -> None:

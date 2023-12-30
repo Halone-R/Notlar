@@ -1,9 +1,16 @@
+from src.data.db.DatabaseConnection import BDConnectionHandler
 from src.presentation.controllers.UserController import UserController
-from src.business.services.AuthenticationService import AuthenticationService 
+from src.business.services.AuthenticationService import AuthenticationService
+from src.data.repositories.UserRepository import UserRepository 
 
 def main():
     auth_service = AuthenticationService()
     user_controller = UserController(auth_service)
+    db_handle = BDConnectionHandler()
+    db_handle.connect_to_db()
+    db_connection = db_handle.get_db_connection()
+
+    userRepository = UserRepository(db_connection)
 
     while True:
         
