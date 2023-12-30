@@ -1,4 +1,3 @@
-from src.data.db.DatabaseConnection import BDConnectionHandler
 from typing import Dict
 from bson.objectid import ObjectId
 
