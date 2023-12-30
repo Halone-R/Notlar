@@ -1,46 +1,25 @@
 from pymongo.mongo_client import MongoClient
+from db.mongo_db_configs import mongo_db_infos
 
-MONGO_URI = 
+class BDConnectionHandler:
+    def __init__(self) -> None:
+        self.__connection_string = 'mongodb://{}:{}@{}:{}/?authSource=admin'.format(
+            mongo_db_infos['USERNAME'],
+            mongo_db_infos['PASSWORD'],
+            mongo_db_infos['HOST'],
+            mongo_db_infos['PORT']
+        )
+        self.__database_name = mongo_db_infos['DB_NAME']
+        self.__client = None
+        self.__db_connection = None
 
-# Create a new client and connect to the server
-client = MongoClient(MONGO_URI)
+    def connect_to_db(self):
+        self.__client = MongoClient(self.__connection_string)
+        self.__db_connection = self.__client[self.__database_name]
 
-db = client["Notlar"]
-
-collection = db.get_collection("Users")
-notas = db.get_collection("Notas")
-
-notas.insert_one({
-    "Title": "Lista de compras",
-    "Content": "Banana"
-})
-
-'''print(db)
-print()
-print(collection)
-print()
-collection.insert_one({
-    "nome": "Rajiv",
-    "pass": "1234"
-})
-
-collection.delete_one({
-    "nome": "Rajiv"
-})
-
-
-
-response = collection.find({"nome": "Rajiv"})
-
-for elem in response:
-    print(elem)
-
-print()'''
-# Send a ping to confirm a successful connection
-try:
-    client.admin.command('ping')
-    print("Pinged your deployment. You successfully connected to MongoDB!")
-except Exception as e:
-    print(e)
-
+    def get_db_connection(self):
+        return self.__db_connection
+    
+    def get_db_client(self):
+        return self.__client
 

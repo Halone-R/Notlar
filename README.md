@@ -52,7 +52,7 @@ E utilizamos o protocolo AMQP para tarefas que podem ser executadas de forma ass
 
 ### ⌊ Operações em Paralelo
 
-Utilizamos threads ou processos paralelos para atender a várias solicitações simultaneamente.
+Utilizamos threads para atender a várias solicitações simultaneamente.
 
 
 
