@@ -1,4 +1,18 @@
 from pymongo import MongoClient
+uri = "mongodb+srv://saranogueira1:password1990@cluster0.36qrg1i.mongodb.net/?retryWrites=true&w=majority" #change when connecting to a different database
+client = MongoClient(uri)
+
+#connect to database
+def run():
+    try:
+        # Connect the client to the server
+        client.start_session()
+        # Send a ping to confirm a successful connection
+        client.admin.command('ping')
+        print("Successfully connected to MongoDB!")
+    finally:
+        # Ensures that the client will close when you finish/error
+        client.close()
 
 
 def connect_to_mongodb(db_url, db_name):
@@ -19,7 +33,7 @@ def save_users(db, collection_name, name, password):
 
 def find_notes(db, collection_name, name):
     collection = db[collection_name]
-    document = list(collection.find({},{name:1}))
+    document = list(collection.find({},{'_id':0}))
     for dic in document:
         print(dic)
     
