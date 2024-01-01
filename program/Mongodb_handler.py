@@ -1,4 +1,6 @@
 from pymongo import MongoClient
+from Client import *
+from Encrypt import *
 uri = "mongodb+srv://saranogueira1:password1990@cluster0.36qrg1i.mongodb.net/?retryWrites=true&w=majority" #change when connecting to a different database
 client = MongoClient(uri)
 
@@ -33,10 +35,8 @@ def save_users(db, collection_name, name, password):
 
 def find_notes(db, collection_name, name):
     collection = db[collection_name]
-    document = list(collection.find({},{'_id':0}))
+    document = list(collection.find({},{'_id':0, name:1}))
     for dic in document:
         print(dic)
     
-
-
 
