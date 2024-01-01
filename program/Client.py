@@ -1,9 +1,12 @@
 import xmlrpc.client
-from Mongodb_handler import connect_to_mongodb, save_notes, save_users, find_notes, run
+from Mongodb_handler import *
+from Encrypt import *
 db_url = 'mongodb+srv://saranogueira1:password1990@cluster0.36qrg1i.mongodb.net/' #change when connecting to a different database
 db_name = 'messages'
 collection_name = 'xmlrpc_messages'
 collection_name_u = 'users'
+
+
 
 class Client:
     def __init__(self, server_address):\
@@ -25,11 +28,19 @@ class Client:
         db = connect_to_mongodb(db_url, db_name)
         notes = find_notes(db, collection_name, name)
         
+def encrypt(content):
+    key = generate_key()
+    save_key(key)
+    loaded_key = load_key()
+    encrypt_content = encrypt_message(content, loaded_key)
+    return encrypt_content
+    
+
 
 def run_client(server_address):
     client = Client(server_address)
     name = input("Username: ")
-    password = input("Password: ")
+    password = encrypt(input("Password: "))
     print(client.register(name,password))
     choice = input ("MENU write(w)| retrieve(r): ")
     if choice == "w":
@@ -39,7 +50,7 @@ def run_client(server_address):
             if message == "q":
                 isTrue = False
             else:
-                client.send_message(message, name)
+                client.send_message(encrypt(message), name)
             
     elif choice == "r":
         client.find_message(name)
