@@ -1,6 +1,6 @@
 import xmlrpc.client
-from Mongodb_handler import connect_to_mongodb, save_notes, save_users, find_notes
-db_url = 'mongodb+srv://saranogueira1:password1990@cluster0.36qrg1i.mongodb.net/'
+from Mongodb_handler import connect_to_mongodb, save_notes, save_users, find_notes, run
+db_url = 'mongodb+srv://saranogueira1:password1990@cluster0.36qrg1i.mongodb.net/' #change when connecting to a different database
 db_name = 'messages'
 collection_name = 'xmlrpc_messages'
 collection_name_u = 'users'
