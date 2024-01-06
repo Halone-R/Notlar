@@ -40,7 +40,11 @@ class Server:
     def get_user_id(self, name):
         collection = self.__db_connection.get_collection(self.__collection_name)
         result = collection.find_one({"name": name})
-        return result['_id']
+
+        if result:
+            return result['_id']
+        else:
+            return None  # or handle the case when the user is not found
         
     def login(self, client_name, client_password):
         collection = self.__db_connection.get_collection(self.__collection_name)

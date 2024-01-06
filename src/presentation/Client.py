@@ -41,6 +41,7 @@ def run_client(server_address):
     while True:
         
         print("\n___Bem vindo ao Notlar___\n")
+        print("\n______MENU______\n")
         print(" --------------")
         print("| Registar (r) |")
         print("| Entrar   (e) |")
@@ -106,6 +107,7 @@ def run_client(server_address):
 
                     elif choice == "du":
                         client.delete_user(client.get_user_id(name))
+                        logged_in = False
 
                     elif choice == "s":
                         logged_in = False
