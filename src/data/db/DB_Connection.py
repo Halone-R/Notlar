@@ -1,5 +1,6 @@
 from pymongo.mongo_client import MongoClient
 from src.data.db.mongo_db_configs import mongo_db_infos
+import subprocess
 
 class BDConnectionHandler:
     def __init__(self) -> None:
@@ -12,6 +13,8 @@ class BDConnectionHandler:
         self.__client = None
         self.__db_connection = None
 
+
+
     def connect_to_db(self):
         self.__client = MongoClient(self.__connection_string)
         self.__db_connection = self.__client[self.__database_name]
@@ -21,4 +24,8 @@ class BDConnectionHandler:
     
     def get_db_client(self):
         return self.__client
+    
+    def backup_database(self):
+        # Execute o script de shell de backup
+        subprocess.run(["src/data/backup/backup_script.sh"])
 

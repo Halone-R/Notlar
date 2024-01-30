@@ -3,6 +3,22 @@ from src.data.db.DB_Connection import BDConnectionHandler
 import bcrypt
 from bson import ObjectId
 from cryptography.fernet import Fernet
+import threading
+
+class ServerThread(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.daemon = True
+        self.server_ip = None
+        self.port = None
+
+    def run(self):
+        run_server(self.server_ip, self.port)
+       
+
+    def set_params(self, server_ip, port):
+        self.server_ip = server_ip
+        self.port = port
 
 class Server:
     def __init__(self):
@@ -27,6 +43,8 @@ class Server:
             # Inclui o ID no documento do usuário
             message = {"_id": user_id, "name": client_name, "password": hashed_password}
             collection.insert_one(message)
+            self.__db_handle.backup_database()
+
             return f"{client_name} registrado com sucesso."
         
     def has_notes(self, user_id):
@@ -70,6 +88,7 @@ class Server:
             if collection.find({"user_id": user_id}):
                 collection.delete_many({"user_id":user_id})
             collection.delete_many({"_id":user_id})
+            self.__db_handle.backup_database()
             return f"{user_id} deletado com sucesso."
         
         else:
@@ -79,7 +98,7 @@ class Server:
     def save_notes(self, note_name, xml_data, user_id):
         collection = self.__db_connection.get_collection(self.__collection_name)
 
-        # Gere uma chave para encriptação
+        # Gera uma chave para encriptação
         key = Fernet.generate_key()
 
         # Cria uma instância do objeto Fernet com a chave gerada
@@ -91,6 +110,8 @@ class Server:
         # Salva a chave usada para encriptação junto com os dados
         message = {"user_id": user_id, "note_name": note_name, "encrypted_content": encrypted_content, "encryption_key": key}
         collection.insert_one(message)
+        self.__db_handle.backup_database()
+
         return f"Nota '{note_name}' salva com sucesso."
     
     def find_notes(self, user_id):
@@ -119,10 +140,11 @@ class Server:
         collection = self.__db_connection.get_collection(self.__collection_name)
         result = collection.delete_one({"user_id": user_id, "note_name": note_name})
         if result.deleted_count > 0:
+            self.__db_handle.backup_database()
             return f"Nota '{note_name}' deletada com sucesso."
+        
         else:
             return f"Nota '{note_name}' não encontrada."
-        
 
 
 def run_server(server_ip, port):
@@ -130,3 +152,16 @@ def run_server(server_ip, port):
     server.register_instance(Server())
     print(f"Servidor a correr no endereço: {server_ip}, porta:{port}...")
     server.serve_forever()
+
+
+def start_multi_threaded_server(server_ip, start_port, num_servers, num_threads_per_server):
+    for i in range(num_servers):
+        port = start_port + i
+        for j in range(num_threads_per_server):
+            thread = ServerThread()
+            thread.set_params(server_ip, port + j) 
+            thread.start()
+            print(f"Servidor {i+1} iniciado na porta: {port + j}")
+
+
+start_multi_threaded_server("127.0.0.1", 8000, 3, 4)
