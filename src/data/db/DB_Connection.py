@@ -26,6 +26,5 @@ class BDConnectionHandler:
         return self.__client
     
     def backup_database(self):
-        # Execute o script de shell de backup
         subprocess.run(["src/data/backup/backup_script.sh"])
 
